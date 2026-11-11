@@ -20,7 +20,7 @@ import { toast } from "sonner";
 export const Route = createFileRoute("/perfil")({
   head: () => ({
     meta: [
-      { title: "Meu Perfil — ACHAEBUSCA" },
+      { title: "Meu Perfil — Inspire-se" },
       { name: "description", content: "Gerencie sua conta, pedidos e solicitações." },
     ],
   }),

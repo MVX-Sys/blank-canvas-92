@@ -71,13 +71,13 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "ACHAEBUSCA — Moda masculina" },
+      { title: "Inspire-se — Moda masculina" },
       {
         name: "description",
         content:
-          "Loja online ACHAEBUSCA — camisas, bermudas, calças e acessórios. Compre pelo WhatsApp.",
+          "Loja online Inspire-se — camisas, bermudas, calças e acessórios. Compre pelo WhatsApp.",
       },
-      { property: "og:title", content: "ACHAEBUSCA — Moda masculina" },
+      { property: "og:title", content: "Inspire-se — Moda masculina" },
       { property: "og:description", content: "Loja online com checkout via WhatsApp." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },

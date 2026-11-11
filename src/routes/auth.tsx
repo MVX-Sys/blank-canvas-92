@@ -10,8 +10,8 @@ import { validarSenha, formatarTelefone } from "@/lib/password";
 export const Route = createFileRoute("/auth")({
   head: () => ({
     meta: [
-      { title: "Entrar — ACHAEBUSCA" },
-      { name: "description", content: "Entre ou cadastre-se na ACHAEBUSCA." },
+      { title: "Entrar — Inspire-se" },
+      { name: "description", content: "Entre ou cadastre-se na Inspire-se." },
     ],
   }),
   component: AuthPage,

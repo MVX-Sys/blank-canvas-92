@@ -21,13 +21,13 @@ export const Route = createFileRoute("/produtos")({
   validateSearch: searchSchema,
   head: () => ({
     meta: [
-      { title: "ACHAEBUSCA — Moda masculina urbana" },
+      { title: "Inspire-se — Moda masculina urbana" },
       {
         name: "description",
         content:
           "Camisas, bermudas, calças e acessórios selecionados. Peça direto pelo WhatsApp.",
       },
-      { property: "og:title", content: "ACHAEBUSCA — Catálogo" },
+      { property: "og:title", content: "Inspire-se — Catálogo" },
       { property: "og:description", content: "Moda urbana, atendimento próximo, pedidos via WhatsApp." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },

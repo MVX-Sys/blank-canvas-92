@@ -9,7 +9,7 @@ import { ChevronLeft, RefreshCcw, Bell } from "lucide-react";
 export const Route = createFileRoute("/reposicoes")({
   head: () => ({
     meta: [
-      { title: "Minhas Reposições — ACHAEBUSCA" },
+      { title: "Minhas Reposições — Inspire-se" },
       { name: "description", content: "Acompanhe seus pedidos de aviso de reposição." },
     ],
   }),

@@ -11,16 +11,16 @@ import { ARRAY_COLUMNS, EXPORT_COLUMNS } from "@/lib/site-export-columns";
 
 export const Route = createFileRoute("/_authenticated/admin/exportar")({
   head: () => ({ meta: [
-    { title: "Exportar dados — acha&busca ATACADO" },
-    { name: "description", content: "Exportação administrativa dos dados e fotos do catálogo acha&busca." },
-    { property: "og:title", content: "Exportar dados — acha&busca ATACADO" },
-    { property: "og:description", content: "Exportação administrativa dos dados e fotos do catálogo acha&busca." },
+    { title: "Exportar dados — Inspire-se" },
+    { name: "description", content: "Exportação administrativa dos dados e fotos do catálogo Inspire-se." },
+    { property: "og:title", content: "Exportar dados — Inspire-se" },
+    { property: "og:description", content: "Exportação administrativa dos dados e fotos do catálogo Inspire-se." },
     { property: "og:type", content: "website" }, { name: "twitter:card", content: "summary" },
   ] }),
   component: ExportPage,
 });
 
-const GUIDE = `EXPORTAÇÃO acha&busca ATACADO
+const GUIDE = `EXPORTAÇÃO Inspire-se
 
 Este pacote contém CSV por tabela, cópia JSON, cadastro de usuários SEM senhas e um manifesto com contagens e falhas. Não contém estrutura SQL, políticas, funções, segredos, sessões ou configurações de login. Não é um backup restaurável completo. As leituras são paginadas e não constituem um snapshot transacional: evite alterações durante a exportação.
 
