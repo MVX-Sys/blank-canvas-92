@@ -11,16 +11,16 @@ import { ARRAY_COLUMNS, EXPORT_COLUMNS } from "@/lib/site-export-columns";
 
 export const Route = createFileRoute("/_authenticated/admin/exportar")({
   head: () => ({ meta: [
-    { title: "Exportar dados — acha&busca ATACADO" },
-    { name: "description", content: "Exportação administrativa dos dados e fotos do catálogo acha&busca." },
-    { property: "og:title", content: "Exportar dados — acha&busca ATACADO" },
-    { property: "og:description", content: "Exportação administrativa dos dados e fotos do catálogo acha&busca." },
+    { title: "Exportar dados — Inspire-se" },
+    { name: "description", content: "Exportação administrativa dos dados e fotos do catálogo Inspire-se." },
+    { property: "og:title", content: "Exportar dados — Inspire-se" },
+    { property: "og:description", content: "Exportação administrativa dos dados e fotos do catálogo Inspire-se." },
     { property: "og:type", content: "website" }, { name: "twitter:card", content: "summary" },
   ] }),
   component: ExportPage,
 });
 
-const GUIDE = `EXPORTAÇÃO acha&busca ATACADO
+const GUIDE = `EXPORTAÇÃO Inspire-se
 
 Este pacote contém CSV por tabela, cópia JSON, cadastro de usuários SEM senhas e um manifesto com contagens e falhas. Não contém estrutura SQL, políticas, funções, segredos, sessões ou configurações de login. Não é um backup restaurável completo. As leituras são paginadas e não constituem um snapshot transacional: evite alterações durante a exportação.
 
@@ -97,7 +97,7 @@ function ExportPage() {
       zip.file("manifesto.json", JSON.stringify({ version: 1, generated_at: new Date().toISOString(), tables: counts, product_images_requested: includeImages, product_images_exported: images, warnings, passwords_included: false, schema_included: false, other_storage_included: false }, null, 2));
       setProgress("Preparando arquivo ZIP…");
       const blob = await zip.generateAsync({ type: "blob", compression: "STORE" });
-      setReady({ blob, filename: `acha-busca-dados-${new Date().toISOString().replace(/[:.]/g, "-")}.zip`, warnings: warnings.length, rows: total, images });
+      setReady({ blob, filename: `inspire-se-dados-${new Date().toISOString().replace(/[:.]/g, "-")}.zip`, warnings: warnings.length, rows: total, images });
       setProgress("");
     } catch {
       setError("Não foi possível concluir a exportação. Nenhum dado foi alterado. Verifique sua conexão e tente novamente.");

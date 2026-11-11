@@ -49,8 +49,8 @@ export const Route = createFileRoute("/produto/$id")({
   },
   head: ({ params }) => ({
     meta: [
-      { title: `Produto — ACHAEBUSCA` },
-      { name: "description", content: `Detalhes do produto ${params.id} na ACHAEBUSCA.` },
+      { title: `Produto — Inspire-se` },
+      { name: "description", content: `Detalhes do produto ${params.id} na Inspire-se.` },
     ],
   }),
   component: ProductPage,

@@ -11,7 +11,7 @@ import { ChevronLeft, Package, Clock, CheckCircle, Truck, XCircle } from "lucide
 export const Route = createFileRoute("/pedidos")({
   head: () => ({
     meta: [
-      { title: "Meus Pedidos — ACHAEBUSCA" },
+      { title: "Meus Pedidos — Inspire-se" },
       { name: "description", content: "Acompanhe seu histórico de pedidos." },
     ],
   }),

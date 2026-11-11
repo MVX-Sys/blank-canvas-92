@@ -10,7 +10,7 @@ import { ChevronLeft, Save, Key, Mail, Phone, User } from "lucide-react";
 export const Route = createFileRoute("/dados-conta")({
   head: () => ({
     meta: [
-      { title: "Dados da Conta — ACHAEBUSCA" },
+      { title: "Dados da Conta — Inspire-se" },
       { name: "description", content: "Gerencie seus dados e senha." },
     ],
   }),
