@@ -97,7 +97,7 @@ function ExportPage() {
       zip.file("manifesto.json", JSON.stringify({ version: 1, generated_at: new Date().toISOString(), tables: counts, product_images_requested: includeImages, product_images_exported: images, warnings, passwords_included: false, schema_included: false, other_storage_included: false }, null, 2));
       setProgress("Preparando arquivo ZIP…");
       const blob = await zip.generateAsync({ type: "blob", compression: "STORE" });
-      setReady({ blob, filename: `acha-busca-dados-${new Date().toISOString().replace(/[:.]/g, "-")}.zip`, warnings: warnings.length, rows: total, images });
+      setReady({ blob, filename: `inspire-se-dados-${new Date().toISOString().replace(/[:.]/g, "-")}.zip`, warnings: warnings.length, rows: total, images });
       setProgress("");
     } catch {
       setError("Não foi possível concluir a exportação. Nenhum dado foi alterado. Verifique sua conexão e tente novamente.");
