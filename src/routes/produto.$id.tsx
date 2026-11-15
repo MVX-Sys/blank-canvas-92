@@ -572,6 +572,11 @@ function ProductPage() {
                       </div>
                     </>
                   )}
+                  {(p as any).preco_atacado != null && Number((p as any).preco_atacado) < p.preco && (
+                    <p className="mt-2 text-sm text-muted-foreground">
+                      Atacado: <span className="font-semibold text-foreground">{brl(Number((p as any).preco_atacado))}</span> / peça a partir de 10 peças no pedido
+                    </p>
+                  )}
                 </div>
 
                 {matriz.cores.length > 0 && (
