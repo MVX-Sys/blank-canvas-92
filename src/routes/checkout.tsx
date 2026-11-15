@@ -19,6 +19,9 @@ import { supabase } from "@/integrations/supabase/client";
 
 type Atendente = { id: string; nome: string; whatsapp: string; foto_path: string | null; cargo?: string };
 
+let _atacGlobal = false;
+const itemPrecoEfetivoRow = (i: any) => _ipe(i, _atacGlobal);
+
 export const Route = createFileRoute("/checkout")({
   head: () => ({
     meta: [
@@ -40,6 +43,7 @@ function CheckoutPage() {
   const { items, total, clear } = useCart();
   const _atac = ehAtacado(totalPecas(items));
   const itemPrecoEfetivo = (i: any) => _ipe(i, _atac);
+  _atacGlobal = _atac;
   const nav = useNavigate();
   const { session } = useAuth();
 
@@ -716,11 +720,11 @@ function CheckoutItemRow({ item, itemsWithDiscount, appliedCoupon, items }: { it
             <div className="flex flex-col items-end gap-0.5">
               {isDiscounted && (
                 <span className="text-[10px] text-muted-foreground line-through decoration-muted-foreground/50">
-                  {brl(itemPrecoEfetivo(item) * item.quantidade)}
+                  {brl(itemPrecoEfetivoRow(item) * item.quantidade)}
                 </span>
               )}
               <span className={`text-xs font-bold ${isDiscounted ? 'text-primary' : 'text-foreground'}`}>
-                {brl((isDiscounted ? (appliedCoupon?.tipo_desconto === 'fixo' ? (itemPrecoEfetivo(item) * item.quantidade - (appliedCoupon.valor_desconto / items.filter((it: any) => itemsWithDiscount.has(it.key)).length)) : (itemPrecoEfetivo(item) * item.quantidade * (1 - appliedCoupon.valor_desconto / 100))) : itemPrecoEfetivo(item) * item.quantidade))}
+                {brl((isDiscounted ? (appliedCoupon?.tipo_desconto === 'fixo' ? (itemPrecoEfetivoRow(item) * item.quantidade - (appliedCoupon.valor_desconto / items.filter((it: any) => itemsWithDiscount.has(it.key)).length)) : (itemPrecoEfetivoRow(item) * item.quantidade * (1 - appliedCoupon.valor_desconto / 100))) : itemPrecoEfetivoRow(item) * item.quantidade))}
               </span>
             </div>
             {isDiscounted && (
