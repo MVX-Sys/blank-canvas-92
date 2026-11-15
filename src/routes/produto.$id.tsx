@@ -569,9 +569,6 @@ function ProductPage() {
                         </p>
                         <span className="text-xs text-muted-foreground">/ peça</span>
                       </div>
-                      <p className="mt-1.5 text-xs text-muted-foreground">
-                        ou em até 3x sem juros no combinado
-                      </p>
                     </>
                   )}
                 </div>
