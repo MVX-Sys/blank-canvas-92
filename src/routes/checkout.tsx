@@ -3,10 +3,10 @@ import { useMemo, useState, useEffect } from "react";
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
 import { getImageUrl, downloadOrderImagesZip } from "@/lib/storage";
-import { useCart, itemPrecoEfetivo as _ipe, ehAtacado, totalPecas, validarPersonalizacao, formatPersonalizacoes } from "@/lib/cart";
+import { useCart, itemPrecoEfetivo as _ipe, ehAtacado, totalPecas, formatPersonalizacoes } from "@/lib/cart";
 import { brl } from "@/lib/format";
 import { useAuth } from "@/lib/auth";
-import { BRAND, VALOR_MINIMO_COMPRA } from "@/lib/config";
+import { BRAND } from "@/lib/config";
 import { ChevronLeft, MessageCircle, FileText, X, User, Ticket, Loader2, ShoppingBag, Phone } from "lucide-react";
 import { downloadOrderPDF } from "@/lib/pdf";
 import { toast } from "sonner";
@@ -97,28 +97,15 @@ function CheckoutPage() {
   }, [items, appliedCoupon]);
 
   const valorFinal = total - discountAmount;
-  const minAtingido = useMemo(
-    () => VALOR_MINIMO_COMPRA <= 0 || total >= VALOR_MINIMO_COMPRA,
-    [total],
-  );
 
   const finalizar = () => {
     if (items.length === 0) {
       toast.error("Seu carrinho está vazio.");
       return;
     }
-    if (!minAtingido) {
-      toast.error(`Valor mínimo para compra: ${brl(VALOR_MINIMO_COMPRA)}`);
-      return;
-    }
     const wppDigits = whatsapp.replace(/\D/g, "");
     if (wppDigits.length < 10 || wppDigits.length > 13) {
       toast.error("Informe seu WhatsApp com DDD (ex.: 31 99999-9999).");
-      return;
-    }
-    const erroPerso = validarPersonalizacao(items as any);
-    if (erroPerso) {
-      toast.error(erroPerso);
       return;
     }
     setShowAtendentes(true);
@@ -331,27 +318,6 @@ function CheckoutPage() {
             </p>
           </div>
 
-          <div className="rounded-xl border border-border bg-card p-3.5 shadow-sm">
-            <div className="flex items-center justify-between text-[10px] font-bold uppercase tracking-widest">
-              <span className="text-muted-foreground">Pedido mínimo</span>
-              <span className={minAtingido ? "text-success" : "text-primary"}>
-                {brl(VALOR_MINIMO_COMPRA)}
-              </span>
-            </div>
-            <div className="mt-2 h-2 w-full overflow-hidden rounded-full bg-border">
-              <div
-                className={`h-full rounded-full transition-all ${minAtingido ? "bg-success" : "bg-primary"}`}
-                style={{ width: `${VALOR_MINIMO_COMPRA > 0 ? Math.min(100, (total / VALOR_MINIMO_COMPRA) * 100) : 100}%` }}
-              />
-            </div>
-            <p className="mt-2 text-[11px] text-muted-foreground">
-              {minAtingido ? (
-                <>Pedido mínimo atingido — pode finalizar.</>
-              ) : (
-                <>Faltam <span className="font-bold text-foreground">{brl(VALOR_MINIMO_COMPRA - total)}</span> para atingir o mínimo.</>
-              )}
-            </p>
-          </div>
         </div>
 
         <section className="mt-7 grid grid-cols-1 gap-6 lg:grid-cols-5">

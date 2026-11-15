@@ -1,16 +1,14 @@
 import { X, Minus, Plus, MessageCircle, Trash2, ShoppingBag, AlertCircle } from "lucide-react";
 import { useNavigate } from "@tanstack/react-router";
-import { useCart, itemPrecoEfetivo, ehAtacado, validarPersonalizacao, formatPersonalizacoes, maxQtd } from "@/lib/cart";
+import { useCart, itemPrecoEfetivo, ehAtacado, formatPersonalizacoes, maxQtd } from "@/lib/cart";
 import { brl } from "@/lib/format";
 import { getImageUrl } from "@/lib/storage";
 import { useEffect, useState } from "react";
-import { VALOR_MINIMO_COMPRA } from "@/lib/config";
 import { toast } from "sonner";
 
 export function CartDrawer({ continueSearch }: { continueSearch?: { cat?: string } } = {}) {
   const { items, open, setOpen, setQty, remove, total, clear } = useCart();
   const nav = useNavigate();
-  const minAtingido = total >= VALOR_MINIMO_COMPRA;
 
   const continuarComprando = () => {
     setOpen(false);
@@ -19,15 +17,6 @@ export function CartDrawer({ continueSearch }: { continueSearch?: { cat?: string
 
   const finalizar = () => {
     if (items.length === 0) return;
-    if (!minAtingido) {
-      toast.error(`Valor mínimo para compra: ${brl(VALOR_MINIMO_COMPRA)}`);
-      return;
-    }
-    const erroPerso = validarPersonalizacao(items);
-    if (erroPerso) {
-      toast.error(erroPerso);
-      return;
-    }
     setOpen(false);
     nav({ to: "/checkout" });
   };
@@ -107,18 +96,9 @@ export function CartDrawer({ continueSearch }: { continueSearch?: { cat?: string
                 {brl(total)}
               </span>
             </div>
-            {!minAtingido && (
-              <div className="mb-4 flex items-center gap-2 rounded-lg bg-primary/10 p-3 text-[11px] font-medium text-primary">
-                <AlertCircle className="h-4 w-4 shrink-0" />
-                <span>Mínimo de {brl(VALOR_MINIMO_COMPRA)} para finalizar o pedido.</span>
-              </div>
-            )}
             <button
               onClick={finalizar}
-              disabled={!minAtingido}
-              className={`btn-shine flex w-full items-center justify-center gap-2 rounded-full bg-primary px-4 py-3.5 text-sm font-bold uppercase tracking-wider text-primary-foreground shadow-sm transition-all hover:opacity-95 active:scale-[0.98] ${
-                !minAtingido ? "cursor-not-allowed opacity-50 grayscale" : ""
-              }`}
+              className="btn-shine flex w-full items-center justify-center gap-2 rounded-full bg-primary px-4 py-3.5 text-sm font-bold uppercase tracking-wider text-primary-foreground shadow-sm transition-all hover:opacity-95 active:scale-[0.98]"
             >
               <MessageCircle className="h-4 w-4" />
               Finalizar pelo WhatsApp
