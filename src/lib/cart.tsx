@@ -27,28 +27,6 @@ export function maxQtd(i: Pick<CartItem, "estoque">): number {
   return typeof i.estoque === "number" && i.estoque >= 0 ? i.estoque : Infinity;
 }
 
-// Pedidos personalizados exigem no mínimo 10 peças da mesma categoria
-export const MIN_PECAS_PERSONALIZACAO = 10;
-
-export function validarPersonalizacao(items: CartItem[]): string | null {
-  const categoriasPersonalizadas = new Map<string, string>();
-  for (const i of items) {
-    if (i.personalizado) {
-      const cat = i.categoriaId || "sem-categoria";
-      categoriasPersonalizadas.set(cat, i.categoriaNome || "esta categoria");
-    }
-  }
-  for (const [catId, catNome] of categoriasPersonalizadas) {
-    const totalCat = items
-      .filter((i) => (i.categoriaId || "sem-categoria") === catId)
-      .reduce((s, i) => s + i.quantidade, 0);
-    if (totalCat < MIN_PECAS_PERSONALIZACAO) {
-      return `Produtos personalizados exigem no mínimo ${MIN_PECAS_PERSONALIZACAO} peças de ${catNome}. Você tem ${totalCat}.`;
-    }
-  }
-  return null;
-}
-
 export function itemAdicionalPersonalizacao(
   i: Pick<CartItem, "personalizacoes">,
 ): number {
