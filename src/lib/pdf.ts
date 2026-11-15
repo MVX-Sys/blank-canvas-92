@@ -5,7 +5,7 @@ import "jspdf-autotable";
 import { brl } from "./format";
 import { BRAND } from "./config";
 import type { ProductListItem } from "./products";
-import { type CartItem, itemPrecoEfetivo, formatPersonalizacoes } from "./cart";
+import { type CartItem, itemPrecoEfetivo, ehAtacado, totalPecas, formatPersonalizacoes } from "./cart";
 import { parsePersonalizacoes, agruparPersonalizacoes } from "./personalizacao";
 
 const fetchImageAsBase64 = async (url: string): Promise<string> => {
@@ -350,6 +350,7 @@ export async function downloadOrderPDF(order: OrderPDFPayload, download = true):
 
   doc.setFont("helvetica", "normal");
   doc.setFontSize(10);
+  const _atac = ehAtacado(totalPecas(order.items));
   for (const it of order.items) {
     if (y > 240) {
       footer(doc);
@@ -385,8 +386,8 @@ export async function downloadOrderPDF(order: OrderPDFPayload, download = true):
     const lines = doc.splitTextToSize(desc, 80);
     doc.text(String(it.quantidade), 18, y + 5);
     doc.text(lines, 75, y + 5);
-    doc.text(brl(itemPrecoEfetivo(it)), 160, y + 5);
-    doc.text(brl(itemPrecoEfetivo(it) * it.quantidade), 196, y + 5, { align: "right" });
+    doc.text(brl(itemPrecoEfetivo(it, _atac)), 160, y + 5);
+    doc.text(brl(itemPrecoEfetivo(it, _atac) * it.quantidade), 196, y + 5, { align: "right" });
 
     // Link clicável para a página do produto
     const productUrl =

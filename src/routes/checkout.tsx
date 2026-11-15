@@ -3,7 +3,7 @@ import { useMemo, useState, useEffect } from "react";
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
 import { getImageUrl, downloadOrderImagesZip } from "@/lib/storage";
-import { useCart, itemPrecoEfetivo, validarPersonalizacao, formatPersonalizacoes } from "@/lib/cart";
+import { useCart, itemPrecoEfetivo as _ipe, ehAtacado, totalPecas, validarPersonalizacao, formatPersonalizacoes } from "@/lib/cart";
 import { brl } from "@/lib/format";
 import { useAuth } from "@/lib/auth";
 import { BRAND, VALOR_MINIMO_COMPRA } from "@/lib/config";
@@ -38,6 +38,8 @@ type FormaPagamento = "PIX";
 
 function CheckoutPage() {
   const { items, total, clear } = useCart();
+  const _atac = ehAtacado(totalPecas(items));
+  const itemPrecoEfetivo = (i: any) => _ipe(i, _atac);
   const nav = useNavigate();
   const { session } = useAuth();
 

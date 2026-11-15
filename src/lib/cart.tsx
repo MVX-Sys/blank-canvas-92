@@ -10,6 +10,7 @@ export type CartItem = {
   hexCor: string;
   tamanho: string;
   preco: number; // preço base (sem promoção)
+  precoAtacado?: number | null; // preço de atacado (10+ peças no pedido)
   precoPromocional?: number | null; // preço promocional definido, se houver
   promocaoAte?: string | null; // ISO expiry
   quantidade: number;
@@ -70,10 +71,30 @@ export function itemPrecoBase(
   return i.preco + itemAdicionalPersonalizacao(i);
 }
 
+// A partir de 10 peças no pedido (somando todos os produtos), vale o preço de atacado
+export const MIN_PECAS_ATACADO = 10;
+export function ehAtacado(totalPecas: number): boolean {
+  return totalPecas >= MIN_PECAS_ATACADO;
+}
+export function totalPecas(items: Pick<CartItem, "quantidade">[]): number {
+  return items.reduce((s, i) => s + i.quantidade, 0);
+}
+
 export function itemPrecoEfetivo(
-  i: Pick<CartItem, "preco" | "precoPromocional" | "promocaoAte" | "personalizacoes">,
+  i: Pick<CartItem, "preco" | "precoPromocional" | "promocaoAte" | "personalizacoes" | "precoAtacado">,
+  atacado = false,
 ): number {
   const extras = itemAdicionalPersonalizacao(i);
+  const varejo = precoVarejoEfetivo(i);
+  const at = i.precoAtacado;
+  if (atacado && at != null && at > 0 && at < varejo) return at + extras;
+  return varejo + extras;
+}
+
+function precoVarejoEfetivo(
+  i: Pick<CartItem, "preco" | "precoPromocional" | "promocaoAte">,
+): number {
+  const extras = 0;
   const promo = i.precoPromocional;
   if (promo == null || promo < 0 || promo >= i.preco) return i.preco + extras;
   if (i.promocaoAte) {
@@ -217,7 +238,8 @@ export function CartProvider({ children }: { children: ReactNode }) {
 
   const clear = () => setItems([]);
 
-  const total = items.reduce((s, i) => s + itemPrecoEfetivo(i) * i.quantidade, 0);
+  const atac = ehAtacado(totalPecas(items));
+  const total = items.reduce((s, i) => s + itemPrecoEfetivo(i, atac) * i.quantidade, 0);
   const count = items.reduce((s, i) => s + i.quantidade, 0);
 
   return (

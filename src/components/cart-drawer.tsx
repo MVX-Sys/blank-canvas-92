@@ -1,6 +1,6 @@
 import { X, Minus, Plus, MessageCircle, Trash2, ShoppingBag, AlertCircle } from "lucide-react";
 import { useNavigate } from "@tanstack/react-router";
-import { useCart, itemPrecoEfetivo, validarPersonalizacao, formatPersonalizacoes, maxQtd } from "@/lib/cart";
+import { useCart, itemPrecoEfetivo, ehAtacado, validarPersonalizacao, formatPersonalizacoes, maxQtd } from "@/lib/cart";
 import { brl } from "@/lib/format";
 import { getImageUrl } from "@/lib/storage";
 import { useEffect, useState } from "react";
@@ -202,6 +202,7 @@ function ResumoQuantidades({ items }: { items: any[] }) {
 }
 
 function CartItemRow({ item: i, setQty, remove }: { item: any, setQty: any, remove: any }) {
+  const { count } = useCart();
   const [img, setImg] = useState<string>("");
 
   useEffect(() => {
@@ -272,7 +273,7 @@ function CartItemRow({ item: i, setQty, remove }: { item: any, setQty: any, remo
       </div>
       <div className="shrink-0 text-right text-sm font-semibold tabular-nums">
         {(() => {
-          const eff = itemPrecoEfetivo(i);
+          const eff = itemPrecoEfetivo(i, ehAtacado(count));
           const promo = eff < i.preco;
           return (
             <div className="flex flex-col items-end">

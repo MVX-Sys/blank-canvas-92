@@ -267,6 +267,7 @@ function ProductPage() {
           hexCor: v.hex_cor,
           tamanho: tam,
           preco: p.preco,
+          precoAtacado: (p as any).preco_atacado ?? null,
           precoPromocional: promo?.ativa ? promo.precoFinal : null,
           promocaoAte: promo?.ativa && promo.validoAte ? promo.validoAte.toISOString() : null,
           foto: p.imagens.find((i: any) => i.principal)?.storage_path || p.imagens[0]?.storage_path || null,
