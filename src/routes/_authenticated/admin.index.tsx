@@ -1082,7 +1082,10 @@ function AdminProductsList() {
                           {p.hash_id || '---'}
                         </code>
                       </td>
-                      <td className="p-4 tabular-nums">{brl(p.preco)}</td>
+                      <td className="p-4 tabular-nums">
+                        <div className="text-sm">{brl(p.preco)} <span className="text-[10px] text-muted-foreground">varejo</span></div>
+                        <div className="text-xs text-muted-foreground">{(p as any).preco_atacado != null ? brl(Number((p as any).preco_atacado)) : "—"} <span className="text-[10px]">atacado</span></div>
+                      </td>
                       <td className="p-4">
                         <span className="tabular-nums">{total}</span>
                         <span className="ml-1 text-xs text-muted-foreground">pç</span>
