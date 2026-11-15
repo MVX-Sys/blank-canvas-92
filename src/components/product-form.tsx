@@ -126,6 +126,7 @@ export function ProductForm({ produtoId }: { produtoId?: string }) {
   const [nome, setNome] = useState("");
   const [descricao, setDescricao] = useState("");
   const [preco, setPreco] = useState<number>(0);
+  const [precoAtacado, setPrecoAtacado] = useState<string>("");
   const [categoriaId, setCategoriaId] = useState<string>("");
   const [codigoBase, setCodigoBase] = useState<string>("");
   
@@ -162,6 +163,7 @@ export function ProductForm({ produtoId }: { produtoId?: string }) {
     setNome(existing.nome);
     setDescricao(existing.descricao ?? "");
     setPreco(existing.preco);
+    setPrecoAtacado((existing as any).preco_atacado != null ? String((existing as any).preco_atacado) : "");
     setCategoriaId(existing.categoria_id ?? "");
     setCodigoBase(((existing as any).codigo_base as string) ?? (existing.hash_id ?? "").slice(0, 3));
     
@@ -342,6 +344,15 @@ export function ProductForm({ produtoId }: { produtoId?: string }) {
       toast.error("Informe o código do produto (letras ou números).");
       return;
     }
+    const atacadoNum = precoAtacado.trim() === "" ? NaN : Number(precoAtacado);
+    if (!Number.isFinite(atacadoNum) || atacadoNum <= 0) {
+      toast.error("Informe o preço de atacado.");
+      return;
+    }
+    if (atacadoNum >= preco) {
+      toast.error("O preço de atacado precisa ser mais barato que o preço de varejo.");
+      return;
+    }
     let precoPromoNum: number | null = null;
     let promoAteIso: string | null = null;
     if (promocao) {
@@ -377,6 +388,7 @@ export function ProductForm({ produtoId }: { produtoId?: string }) {
         nome,
         descricao: descricao || null,
         preco,
+        preco_atacado: Math.round(atacadoNum * 100) / 100,
         categoria_id: categoriaId,
         codigo_base: codigoLimpo,
         marca: null,
@@ -623,7 +635,7 @@ export function ProductForm({ produtoId }: { produtoId?: string }) {
               />
             </Field>
             <div className="grid grid-cols-2 gap-3">
-              <Field label="Preço base *">
+              <Field label="Preço de varejo * (até 9 peças)">
                 <div className="relative">
                   <span className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-sm text-muted-foreground">
                     R$
@@ -641,6 +653,25 @@ export function ProductForm({ produtoId }: { produtoId?: string }) {
                     className="input pl-9"
                   />
                 </div>
+              </Field>
+              <Field label="Preço de atacado * (10+ peças)">
+                <div className="relative">
+                  <span className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-sm text-muted-foreground">
+                    R$
+                  </span>
+                  <input
+                    type="number"
+                    step="0.01"
+                    min="0"
+                    value={precoAtacado}
+                    onChange={(e) => setPrecoAtacado(e.target.value)}
+                    required
+                    className="input pl-9"
+                  />
+                </div>
+                {precoAtacado !== "" && Number(precoAtacado) >= preco && (
+                  <p className="mt-1 text-xs text-destructive">Precisa ser mais barato que o varejo.</p>
+                )}
               </Field>
             </div>
             <Field label="Categoria *">

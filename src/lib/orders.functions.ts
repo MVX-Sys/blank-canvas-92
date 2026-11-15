@@ -57,7 +57,7 @@ export const createOrder = createServerFn({ method: "POST" })
     const { data: variacoes, error: varErr } = await supabase
       .from("variacoes_produto")
       .select(
-        "id, produto_id, nome_cor, tamanho, quantidade_estoque, produtos(id, nome, ativo, preco, preco_promocional, promocao_ate, categoria_id, personalizacoes, hash_id)",
+        "id, produto_id, nome_cor, tamanho, quantidade_estoque, produtos(id, nome, ativo, preco, preco_atacado, preco_promocional, promocao_ate, categoria_id, personalizacoes, hash_id)",
       )
       .in("id", variacaoIds);
 
@@ -65,6 +65,7 @@ export const createOrder = createServerFn({ method: "POST" })
 
     const porId = new Map<string, any>((variacoes || []).map((v: any) => [v.id, v]));
 
+    const atacado = data.itens.reduce((s, i) => s + i.quantidade, 0) >= 10;
     let subtotal = 0;
     const itensCalculados = data.itens.map((item) => {
       const v = porId.get(item.variacao_id);
@@ -77,11 +78,16 @@ export const createOrder = createServerFn({ method: "POST" })
         );
       }
 
-      const base = precoPromocionalValido(
+      const varejo = precoPromocionalValido(
         Number(p.preco),
         p.preco_promocional == null ? null : Number(p.preco_promocional),
         p.promocao_ate ?? null,
       );
+      const precoAtacado = p.preco_atacado == null ? null : Number(p.preco_atacado);
+      const base =
+        atacado && precoAtacado != null && precoAtacado > 0 && precoAtacado < varejo
+          ? precoAtacado
+          : varejo;
       const opcoes = parsePersonalizacoes(p.personalizacoes);
       const precos = new Map(opcoes.map((o) => [o.id, o.preco]));
       const extras = (item.personalizacoes ?? []).reduce(

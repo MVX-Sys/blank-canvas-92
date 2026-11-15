@@ -489,6 +489,7 @@ export type Database = {
           personalizacao_tipo: string | null
           personalizacoes: Json
           preco: number
+          preco_atacado: number | null
           preco_promocional: number | null
           promocao: boolean
           promocao_ate: string | null
@@ -509,6 +510,7 @@ export type Database = {
           personalizacao_tipo?: string | null
           personalizacoes?: Json
           preco: number
+          preco_atacado?: number | null
           preco_promocional?: number | null
           promocao?: boolean
           promocao_ate?: string | null
@@ -529,6 +531,7 @@ export type Database = {
           personalizacao_tipo?: string | null
           personalizacoes?: Json
           preco?: number
+          preco_atacado?: number | null
           preco_promocional?: number | null
           promocao?: boolean
           promocao_ate?: string | null

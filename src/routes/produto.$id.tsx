@@ -267,6 +267,7 @@ function ProductPage() {
           hexCor: v.hex_cor,
           tamanho: tam,
           preco: p.preco,
+          precoAtacado: (p as any).preco_atacado ?? null,
           precoPromocional: promo?.ativa ? promo.precoFinal : null,
           promocaoAte: promo?.ativa && promo.validoAte ? promo.validoAte.toISOString() : null,
           foto: p.imagens.find((i: any) => i.principal)?.storage_path || p.imagens[0]?.storage_path || null,
@@ -570,6 +571,11 @@ function ProductPage() {
                         <span className="text-xs text-muted-foreground">/ peça</span>
                       </div>
                     </>
+                  )}
+                  {(p as any).preco_atacado != null && Number((p as any).preco_atacado) < p.preco && (
+                    <p className="mt-2 text-sm text-muted-foreground">
+                      Atacado: <span className="font-semibold text-foreground">{brl(Number((p as any).preco_atacado))}</span> / peça a partir de 10 peças no pedido
+                    </p>
                   )}
                 </div>
 
