@@ -111,11 +111,6 @@ export const ProductCard = memo(function ProductCard({
             {brl(p.preco)}
           </p>
         )}
-        {!esgotado && (
-          <p className="text-[11px] tabular-nums text-muted-foreground">
-            Até 12x de {brl((promo.ativa ? promo.precoFinal : p.preco) / 12)}
-          </p>
-        )}
         {!esgotado && (promo.ativa || p.novidade) && (
           <span className="inline-block rounded-full bg-foreground px-2.5 py-0.5 text-[9px] font-black uppercase tracking-[0.1em] text-background">
             {promo.ativa ? "Oferta" : "Lançamento"}
