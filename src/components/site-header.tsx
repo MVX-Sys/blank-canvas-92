@@ -26,7 +26,6 @@ export function SiteHeader() {
     cat?: string;
     promo?: boolean;
   };
-  const isHome = currentPath === "/";
 
   const doSearch = (e: React.FormEvent) => {
     e.preventDefault();
