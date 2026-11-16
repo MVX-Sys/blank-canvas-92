@@ -37,11 +37,11 @@ export function SiteHeader() {
       <div
         className="mx-auto flex max-w-7xl items-center gap-2 px-3 py-2.5 sm:gap-4 sm:px-4 sm:py-3 md:gap-8"
       >
-        <Link to="/" className="group flex min-w-0 items-center gap-2 pt-1">
+        <Link to="/" className="group flex min-w-0 items-center gap-2 pt-1 sm:ml-6 md:ml-10">
           <img
             src={logoUrl}
             alt={BRAND}
-            className="h-11 w-11 shrink-0 object-contain drop-shadow-[0_2px_6px_rgba(0,0,0,0.15)] transition-transform duration-300 group-hover:scale-105 sm:h-14 sm:w-14 md:h-16 md:w-16"
+            className="h-14 w-14 shrink-0 object-contain drop-shadow-[0_2px_6px_rgba(0,0,0,0.15)] transition-transform duration-300 group-hover:scale-105 sm:h-16 sm:w-16 md:h-20 md:w-20"
           />
 
           <div className="flex min-w-0 flex-col leading-none">
