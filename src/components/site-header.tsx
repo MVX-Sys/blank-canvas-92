@@ -26,7 +26,6 @@ export function SiteHeader() {
     cat?: string;
     promo?: boolean;
   };
-  const isHome = currentPath === "/";
 
   const doSearch = (e: React.FormEvent) => {
     e.preventDefault();
@@ -36,11 +35,9 @@ export function SiteHeader() {
   return (
     <header className="sticky top-0 z-40 border-b border-black/5 bg-primary text-primary-foreground shadow-[0_4px_20px_-8px_rgba(0,0,0,0.15)]">
       <div
-        className={`mx-auto flex max-w-7xl items-center gap-2 px-3 py-2.5 sm:gap-4 sm:px-4 sm:py-3 md:gap-8 ${
-          isHome ? "relative justify-center" : ""
-        }`}
+        className="mx-auto flex max-w-7xl items-center gap-2 px-3 py-2.5 sm:gap-4 sm:px-4 sm:py-3 md:gap-8"
       >
-        <Link to="/" className="group flex min-w-0 items-center gap-2">
+        <Link to="/" className="group flex min-w-0 items-center gap-2 pt-1">
           <img
             src={logoUrl}
             alt={BRAND}
@@ -57,7 +54,7 @@ export function SiteHeader() {
 
         <form
           onSubmit={doSearch}
-          className={`relative mx-auto hidden w-full max-w-xl flex-1 ${isHome ? "" : "sm:block"}`}
+          className="relative mx-auto hidden w-full max-w-xl flex-1 sm:block"
         >
           <Search className="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
           <input
@@ -70,7 +67,7 @@ export function SiteHeader() {
 
         <div
           className={`flex shrink-0 items-center gap-0.5 text-sm sm:gap-2 ${
-            isHome ? "absolute right-3 top-1/2 -translate-y-1/2 sm:right-4" : "ml-auto"
+            "ml-auto"
           }`}
         >
           {!session && (
@@ -127,21 +124,6 @@ export function SiteHeader() {
           </button>
         </div>
       </div>
-
-      {/* Desktop search row — página inicial (logo centralizada acima) */}
-      {isHome && (
-        <form onSubmit={doSearch} className="mx-auto hidden w-full max-w-2xl px-3 pb-3 sm:block sm:px-4">
-          <div className="relative">
-            <Search className="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-            <input
-              value={q}
-              onChange={(e) => setQ(e.target.value)}
-              placeholder="O que você procura hoje?"
-              className="w-full rounded-full border border-white/20 bg-white py-2.5 pl-10 pr-4 text-sm text-foreground placeholder:text-muted-foreground outline-none transition-colors focus:border-white focus:ring-2 focus:ring-white/40"
-            />
-          </div>
-        </form>
-      )}
 
       {/* Mobile search row */}
       <form onSubmit={doSearch} className="border-t border-white/10 px-3 pb-2.5 pt-2 sm:hidden">
