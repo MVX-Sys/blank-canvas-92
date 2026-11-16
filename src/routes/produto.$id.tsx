@@ -8,7 +8,7 @@ import { getPromoInfo, isEsgotado, type Categoria, type ProductListItem, type Va
 import { listCategoriasFn, getProdutoFn } from "@/lib/products.functions";
 import { downloadImage, downloadImagesAsZip, getImageUrl } from "@/lib/storage";
 import { brl } from "@/lib/format";
-import { useCart, MIN_PECAS_PERSONALIZACAO } from "@/lib/cart";
+import { useCart } from "@/lib/cart";
 import { parsePersonalizacoes, agruparPersonalizacoes } from "@/lib/personalizacao";
 import { Plus, Minus, ShoppingBag, ChevronLeft, Download, Images, FileText, Bell, X, Share2, Copy, Check, QrCode } from "lucide-react";
 import React from "react";
@@ -720,8 +720,7 @@ function ProductPage() {
                     <span>
                       <span className="block text-sm font-semibold text-foreground">Personalizar Produto</span>
                       <span className="mt-1 block text-xs text-muted-foreground">
-                        Pedido mínimo de {MIN_PECAS_PERSONALIZACAO} peças da categoria
-                        {categoriaAtual?.nome ? ` ${categoriaAtual.nome}` : ""} para produtos personalizados.
+                        Personalize este produto com as opções abaixo.
                       </span>
                       {ehBermuda && (
                         <>
@@ -772,11 +771,6 @@ function ProductPage() {
                         </p>
                       )}
                     </div>
-                  )}
-                  {personalizado && totalItens > 0 && totalItens < MIN_PECAS_PERSONALIZACAO && (
-                    <p className="mt-3 rounded-lg bg-primary/10 p-2.5 text-[11px] font-medium text-primary">
-                      Faltam {MIN_PECAS_PERSONALIZACAO - totalItens} peça(s) desta categoria para atingir o mínimo de personalização.
-                    </p>
                   )}
                 </div>
 
