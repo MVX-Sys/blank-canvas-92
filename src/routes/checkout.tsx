@@ -512,7 +512,7 @@ function CheckoutPage() {
               <button
                 type="button"
                 onClick={finalizar}
-                disabled={items.length === 0 || !minAtingido}
+                disabled={items.length === 0}
                 className="btn-shine inline-flex w-full items-center justify-center gap-2 rounded-xl bg-primary py-4 text-sm font-bold text-primary-foreground shadow-lg shadow-primary/20 transition-all hover:opacity-95 active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-40"
               >
                 <MessageCircle className="h-5 w-5" />
@@ -546,7 +546,7 @@ function CheckoutPage() {
             <button
               type="button"
               onClick={finalizar}
-              disabled={items.length === 0 || !minAtingido}
+              disabled={items.length === 0}
               className="btn-shine inline-flex flex-1 items-center justify-center gap-2 rounded-xl bg-primary py-3.5 text-sm font-bold text-primary-foreground shadow-lg shadow-primary/20 transition-all active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-40"
             >
               <MessageCircle className="h-4 w-4" />
