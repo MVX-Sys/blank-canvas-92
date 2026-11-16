@@ -37,10 +37,9 @@ export function SiteHeader() {
     <header className="sticky top-0 z-40 border-b border-black/5 bg-primary text-primary-foreground shadow-[0_4px_20px_-8px_rgba(0,0,0,0.15)]">
       <div
         className={`mx-auto flex max-w-7xl items-center gap-2 px-3 py-2.5 sm:gap-4 sm:px-4 sm:py-3 md:gap-8 ${
-          isHome ? "relative justify-center" : ""
         }`}
       >
-        <Link to="/" className="group flex min-w-0 items-center gap-2">
+        <Link to="/" className="group flex min-w-0 items-center gap-2 pt-1">
           <img
             src={logoUrl}
             alt={BRAND}
@@ -57,7 +56,7 @@ export function SiteHeader() {
 
         <form
           onSubmit={doSearch}
-          className={`relative mx-auto hidden w-full max-w-xl flex-1 ${isHome ? "" : "sm:block"}`}
+          className="relative mx-auto hidden w-full max-w-xl flex-1 sm:block"
         >
           <Search className="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
           <input
@@ -70,7 +69,7 @@ export function SiteHeader() {
 
         <div
           className={`flex shrink-0 items-center gap-0.5 text-sm sm:gap-2 ${
-            isHome ? "absolute right-3 top-1/2 -translate-y-1/2 sm:right-4" : "ml-auto"
+            "ml-auto"
           }`}
         >
           {!session && (
