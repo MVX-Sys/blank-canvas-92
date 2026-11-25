@@ -90,6 +90,8 @@ function ProductPage() {
   const [restockObs, setRestockObs] = useState("");
   const [restockSending, setRestockSending] = useState(false);
   const [personalizado, setPersonalizado] = useState(false);
+  const [selCor, setSelCor] = useState<string | null>(null);
+  const [selTam, setSelTam] = useState<string | null>(null);
   const [persoSel, setPersoSel] = useState<string[]>([]);
   const togglePerso = (id: string) =>
     setPersoSel((prev) => (prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id]));
@@ -579,133 +581,103 @@ function ProductPage() {
                   )}
                 </div>
 
-                {matriz.cores.length > 0 && (
-                  <div className="space-y-4">
-                    <div className="flex items-center justify-between">
-                      <p className="text-xs font-semibold uppercase tracking-wider text-foreground">
-                        Selecione as Variações
+                {matriz.cores.length > 0 && (() => {
+                  const corAtual = selCor ?? matriz.cores[0]?.nome ?? null;
+                  const vSel = corAtual && selTam ? getVar(corAtual, selTam) : undefined;
+                  const livreSel = disponivelDe(vSel as any);
+                  const keySel = corAtual && selTam ? `${corAtual}||${selTam}` : "";
+                  const qSel = keySel ? qtys[keySel] ?? 0 : 0;
+                  const escolher = (cor: string, tam: string | null) => {
+                    setSelCor(cor);
+                    setSelTam(tam);
+                    const v = tam ? getVar(cor, tam) : undefined;
+                    setQtys(v && disponivelDe(v as any) > 0 ? { [`${cor}||${tam}`]: 1 } : {});
+                  };
+                  return (
+                  <div className="space-y-5">
+                    <div>
+                      <p className="mb-2 text-sm text-foreground">
+                        Cor: <span className="font-semibold">{corAtual}</span>
                       </p>
-                      <p className="text-[10px] text-muted-foreground bg-muted px-2 py-0.5 rounded-full">
-                        {p.variacoes.length} combinações disponíveis
+                      <div className="flex flex-wrap gap-2">
+                        {matriz.cores.map((c) => {
+                          const temEstoque = matriz.tamanhos.some((t) => disponivelDe(getVar(c.nome, t) as any) > 0);
+                          const ativo = c.nome === corAtual;
+                          return (
+                            <button
+                              key={c.nome}
+                              type="button"
+                              onClick={() => escolher(c.nome, selTam && getVar(c.nome, selTam) ? selTam : null)}
+                              title={c.nome}
+                              aria-label={`Cor ${c.nome}`}
+                              aria-pressed={ativo}
+                              className={`relative h-10 w-10 rounded-full p-0.5 transition-all ${ativo ? "ring-2 ring-foreground ring-offset-2 ring-offset-background" : "ring-1 ring-border hover:ring-foreground/50"} ${temEstoque ? "" : "opacity-40"}`}
+                            >
+                              <span className="block h-full w-full rounded-full border border-border/60" style={{ backgroundColor: c.hex }} />
+                            </button>
+                          );
+                        })}
+                      </div>
+                    </div>
+
+                    <div>
+                      <p className="mb-2 text-sm text-foreground">
+                        Tamanho: <span className="font-semibold">{selTam ?? "selecione"}</span>
                       </p>
+                      <div className="flex flex-wrap gap-2">
+                        {matriz.tamanhos.map((t) => {
+                          const v = corAtual ? getVar(corAtual, t) : undefined;
+                          const livre = disponivelDe(v as any);
+                          const ativo = t === selTam;
+                          const indisponivel = !v || livre <= 0;
+                          return (
+                            <button
+                              key={t}
+                              type="button"
+                              disabled={!v}
+                              onClick={() => corAtual && escolher(corAtual, t)}
+                              className={`relative min-w-12 rounded-md border px-3 py-2.5 text-sm font-medium transition-all ${ativo ? "border-foreground bg-foreground text-background" : "border-border bg-card hover:border-foreground"} ${indisponivel ? "text-muted-foreground line-through decoration-1" : ""} disabled:cursor-not-allowed disabled:opacity-40`}
+                            >
+                              {t}
+                            </button>
+                          );
+                        })}
+                      </div>
                     </div>
-                    <div className="overflow-x-auto rounded-xl border border-border bg-card">
-                      <table className="w-full text-sm">
-                        <thead className="bg-muted/60">
-                          <tr>
-                            <th className="p-3 text-left text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-                              Cor
-                            </th>
-                            {matriz.tamanhos.map((t) => (
-                              <th
-                                key={t}
-                                className="p-3 text-center text-xs font-semibold uppercase tracking-wider text-muted-foreground"
-                              >
-                                {t}
-                              </th>
-                            ))}
-                          </tr>
-                        </thead>
-                        <tbody>
-                          {matriz.cores.map((c) => (
-                            <tr key={c.nome} className="border-t border-border">
-                              <td className="p-3">
-                                <div className="flex items-center gap-2">
-                                  <div
-                                    className="h-4 w-4 shrink-0 rounded-full border border-border/80 shadow-sm"
-                                    style={{ backgroundColor: c.hex }}
-                                    title={`Cor ${c.nome}`}
-                                    aria-label={`Cor ${c.nome}`}
-                                  />
-                                  <span className="text-xs font-medium">{c.nome}</span>
-                                </div>
-                              </td>
-                              {matriz.tamanhos.map((t) => {
-                                const v = getVar(c.nome, t);
-                                const key = `${c.nome}||${t}`;
-                                const q = qtys[key] ?? 0;
-                                 const livre = disponivelDe(v as any);
-                                 const disponivel = v && livre > 0;
-                                if (!v)
-                                  return (
-                                    <td key={t} className="bg-muted/30 p-3 text-center text-muted-foreground/50">
-                                      —
-                                    </td>
-                                  );
-                                 if (!disponivel)
-                                   return (
-                                     <td key={t} className="p-2 text-center">
-                                       <div className="flex flex-col items-center gap-1">
-                                         {v.quantidade_estoque > 0 ? (
-                                           <>
-                                             <span
-                                               title="Todo o estoque já está no seu carrinho"
-                                               className="mx-auto inline-flex items-center rounded-full border border-border bg-muted/50 px-2.5 py-1 text-[10px] font-medium uppercase tracking-wider text-muted-foreground"
-                                             >
-                                               No carrinho
-                                             </span>
-                                           </>
-                                         ) : (
-                                           <>
-                                             <button
-                                               type="button"
-                                               onClick={() => setRestock({ cor: c.nome, tam: t })}
-                                               title="Avise-me por WhatsApp quando repor"
-                                               className="mx-auto inline-flex items-center gap-1 rounded-full border border-dashed border-border px-2.5 py-1 text-[10px] font-medium uppercase tracking-wider text-muted-foreground transition-colors hover:border-brand hover:text-brand"
-                                             >
-                                               <Bell className="h-3 w-3" />
-                                               Avise-me
-                                             </button>
-                                             <span className="text-[9px] font-medium tabular-nums text-muted-foreground">
-                                               Esgotado
-                                             </span>
-                                           </>
-                                         )}
-                                       </div>
-                                     </td>
-                                   );
-                                return (
-                                  <td key={t} className="p-2">
-                                    <div className="flex flex-col items-center gap-1">
-                                      {q === 0 ? (
-                                        <button
-                                          onClick={() => setQ(key, 1)}
-                                          className="mx-auto flex h-8 w-8 items-center justify-center rounded-lg border border-border transition-all hover:border-foreground hover:bg-foreground hover:text-background"
-                                          aria-label="Adicionar"
-                                        >
-                                          <Plus className="h-3.5 w-3.5" />
-                                        </button>
-                                      ) : (
-                                        <div className="mx-auto flex items-center justify-center gap-0.5 rounded-lg bg-foreground p-0.5 text-background">
-                                          <button
-                                            onClick={() => setQ(key, q - 1)}
-                                            className="grid h-7 w-6 place-items-center rounded-md hover:bg-background/10"
-                                          >
-                                            <Minus className="h-3 w-3" />
-                                          </button>
-                                          <span className="w-5 text-center text-xs font-semibold tabular-nums">
-                                            {q}
-                                          </span>
-                                          <button
-                                            onClick={() => setQ(key, Math.min(livre, q + 1))}
-                                            disabled={q >= livre}
-                                            className="grid h-7 w-6 place-items-center rounded-md hover:bg-background/10 disabled:opacity-40"
-                                          >
-                                            <Plus className="h-3 w-3" />
-                                          </button>
-                                        </div>
-                                      )}
-                                    </div>
-                                  </td>
-                                );
-                              })}
-                            </tr>
-                          ))}
-                        </tbody>
-                      </table>
-                    </div>
+
+                    {vSel && livreSel > 0 && (
+                      <div className="flex items-center gap-4">
+                        <span className="text-sm text-foreground">Quantidade</span>
+                        <div className="flex items-center rounded-md border border-border">
+                          <button type="button" onClick={() => setQ(keySel, Math.max(1, qSel - 1))} className="grid h-10 w-10 place-items-center hover:bg-muted" aria-label="Diminuir">
+                            <Minus className="h-4 w-4" />
+                          </button>
+                          <span className="w-10 text-center text-sm font-semibold tabular-nums">{qSel}</span>
+                          <button type="button" onClick={() => setQ(keySel, Math.min(livreSel, qSel + 1))} disabled={qSel >= livreSel} className="grid h-10 w-10 place-items-center hover:bg-muted disabled:opacity-40" aria-label="Aumentar">
+                            <Plus className="h-4 w-4" />
+                          </button>
+                        </div>
+                        <span className="text-xs text-muted-foreground">{livreSel} disponíveis</span>
+                      </div>
+                    )}
+
+                    {vSel && livreSel <= 0 && (
+                      vSel.quantidade_estoque > 0 ? (
+                        <p className="text-sm text-muted-foreground">Todo o estoque deste item já está no seu carrinho.</p>
+                      ) : (
+                        <button
+                          type="button"
+                          onClick={() => corAtual && selTam && setRestock({ cor: corAtual, tam: selTam })}
+                          className="inline-flex items-center gap-2 rounded-md border border-dashed border-border px-4 py-2.5 text-sm font-medium text-muted-foreground hover:border-brand hover:text-brand"
+                        >
+                          <Bell className="h-4 w-4" />
+                          Esgotado · Avise-me quando chegar
+                        </button>
+                      )
+                    )}
                   </div>
-                )}
+                  );
+                })()}
 
                 <div
                   className={`rounded-2xl border border-border bg-card p-4 ${gruposPerso.length === 0 && !ehBermuda ? "hidden" : ""}`}
