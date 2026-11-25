@@ -16,6 +16,7 @@ import { validateCupon } from "@/lib/coupons.functions";
 import { useServerFn } from "@tanstack/react-start";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
+import { PixPagamento, type ChavePix } from "@/components/pix-pagamento";
 
 type Atendente = { id: string; nome: string; whatsapp: string; foto_path: string | null; cargo?: string };
 
@@ -123,6 +124,20 @@ function CheckoutPage() {
   const atendentes = dbAtendentes || [];
 
   const [enviando, setEnviando] = useState(false);
+  const [pixEtapa, setPixEtapa] = useState<{ valor: number; txid: string; url: string } | null>(null);
+
+  const { data: chavePix } = useQuery({
+    queryKey: ["pix-principal"],
+    queryFn: async () => {
+      const { data } = await supabase
+        .from("pix_chaves")
+        .select("tipo, chave, nome_recebedor, cidade, banco, principal")
+        .eq("ativo", true)
+        .order("principal", { ascending: false })
+        .limit(1);
+      return ((data?.[0] as ChavePix | undefined) ?? null);
+    },
+  });
 
   const enviarParaAtendente = async (atendente: Atendente) => {
     if (enviando) return;
@@ -134,7 +149,7 @@ function CheckoutPage() {
         return;
       }
 
-      await fnCreateOrder({
+      const pedidoCriado: any = await fnCreateOrder({
         data: {
           total: valorFinal,
           forma_envio: formaEnvio,
@@ -207,7 +222,7 @@ function CheckoutPage() {
         "*🚚 ENTREGA E PAGAMENTO*",
         DIV,
         `Forma de envio: ${formaEnvio === "ENTREGA" ? "Entrega (transportadora a combinar)" : "Retirada no local"}`,
-        `Forma de pagamento: ${formaPagamento}`,
+        `Forma de pagamento: ${formaPagamento}${chavePix ? " (QR Code gerado no site)" : ""}`,
         observacoes ? "" : "",
         observacoes ? DIV : "",
         observacoes ? "*📝 OBSERVAÇÕES*" : "",
@@ -252,9 +267,14 @@ function CheckoutPage() {
         }
       }
 
-      toast.success(`Pedido salvo! Redirecionando para o WhatsApp…`);
       setShowAtendentes(false);
       clear();
+      if (chavePix) {
+        const valorPix = Number(pedidoCriado?.total ?? valorFinal);
+        setPixEtapa({ valor: valorPix, txid: String(pedidoCriado?.id ?? "").replace(/-/g, "").slice(0, 25), url: whatsappUrl });
+        return;
+      }
+      toast.success(`Pedido salvo! Redirecionando para o WhatsApp…`);
       window.location.href = whatsappUrl;
     } catch (err: any) {
       console.error("Erro ao salvar pedido:", err);
@@ -393,9 +413,12 @@ function CheckoutPage() {
                   <div className="flex h-[42px] items-center justify-center gap-2 rounded-xl border border-success/25 bg-success/10">
                     <span className="text-xs font-black uppercase tracking-wider text-success">PIX</span>
                     <span className="rounded bg-success px-1.5 py-0.5 text-[7px] font-black uppercase leading-none text-background">
-                      Única forma
+                      Aprovação imediata
                     </span>
                   </div>
+                  <p className="mt-1.5 text-[9px] leading-snug text-muted-foreground">
+                    {chavePix ? "QR Code e copia e cola aparecem ao confirmar" : "Chave enviada pelo atendente"}
+                  </p>
                 </Field>
               </div>
 
@@ -568,6 +591,17 @@ function CheckoutPage() {
       <div className="pb-24 lg:pb-0">
         <SiteFooter />
       </div>
+
+      {pixEtapa && chavePix && (
+        <div role="dialog" className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4 backdrop-blur-sm">
+          <div className="relative max-h-[92vh] w-full max-w-md overflow-y-auto rounded-2xl border border-border bg-card p-6 shadow-premium">
+            <button type="button" onClick={() => { setPixEtapa(null); nav({ to: "/" }); }} className="absolute right-3 top-3 rounded-full p-1.5 text-muted-foreground hover:bg-accent" aria-label="Fechar">
+              <X className="h-4 w-4" />
+            </button>
+            <PixPagamento chave={chavePix} valor={pixEtapa.valor} txid={pixEtapa.txid} onWhatsapp={() => { window.location.href = pixEtapa.url; }} />
+          </div>
+        </div>
+      )}
 
       {showAtendentes && (
         <div
