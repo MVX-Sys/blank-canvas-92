@@ -315,6 +315,11 @@ export type Database = {
           gestaoclick_venda_id: string | null
           id: string
           observacoes: string | null
+          pagamento_status: string
+          pago_em: string | null
+          pix_expira_em: string | null
+          pix_informado_em: string | null
+          pix_txid: string | null
           status: string
           total: number
           user_id: string
@@ -332,6 +337,11 @@ export type Database = {
           gestaoclick_venda_id?: string | null
           id?: string
           observacoes?: string | null
+          pagamento_status?: string
+          pago_em?: string | null
+          pix_expira_em?: string | null
+          pix_informado_em?: string | null
+          pix_txid?: string | null
           status?: string
           total: number
           user_id: string
@@ -349,6 +359,11 @@ export type Database = {
           gestaoclick_venda_id?: string | null
           id?: string
           observacoes?: string | null
+          pagamento_status?: string
+          pago_em?: string | null
+          pix_expira_em?: string | null
+          pix_informado_em?: string | null
+          pix_txid?: string | null
           status?: string
           total?: number
           user_id?: string
@@ -746,6 +761,10 @@ export type Database = {
           phone: string
         }[]
       }
+      confirmar_pagamento_pix: {
+        Args: { _aprovado: boolean; _pedido_id: string }
+        Returns: undefined
+      }
       decrement_stock: {
         Args: { amount: number; var_id: string }
         Returns: undefined
@@ -762,6 +781,7 @@ export type Database = {
         }
         Returns: boolean
       }
+      informar_pagamento_pix: { Args: { _pedido_id: string }; Returns: string }
       is_staff: { Args: { _user_id: string }; Returns: boolean }
       next_restock_whatsapp: { Args: never; Returns: string[] }
       product_color_letter: { Args: { _produto_id: string }; Returns: string }

@@ -124,7 +124,7 @@ function CheckoutPage() {
   const atendentes = dbAtendentes || [];
 
   const [enviando, setEnviando] = useState(false);
-  const [pixEtapa, setPixEtapa] = useState<{ valor: number; txid: string; url: string } | null>(null);
+  const [pixEtapa, setPixEtapa] = useState<{ pedidoId: string; url: string } | null>(null);
 
   const { data: chavePix } = useQuery({
     queryKey: ["pix-principal"],
@@ -270,8 +270,7 @@ function CheckoutPage() {
       setShowAtendentes(false);
       clear();
       if (chavePix) {
-        const valorPix = Number(pedidoCriado?.total ?? valorFinal);
-        setPixEtapa({ valor: valorPix, txid: String(pedidoCriado?.id ?? "").replace(/-/g, "").slice(0, 25), url: whatsappUrl });
+        setPixEtapa({ pedidoId: String(pedidoCriado.id), url: whatsappUrl });
         return;
       }
       toast.success(`Pedido salvo! Redirecionando para o WhatsApp…`);
@@ -598,7 +597,7 @@ function CheckoutPage() {
             <button type="button" onClick={() => { setPixEtapa(null); nav({ to: "/" }); }} className="absolute right-3 top-3 rounded-full p-1.5 text-muted-foreground hover:bg-accent" aria-label="Fechar">
               <X className="h-4 w-4" />
             </button>
-            <PixPagamento chave={chavePix} valor={pixEtapa.valor} txid={pixEtapa.txid} onWhatsapp={() => { window.location.href = pixEtapa.url; }} />
+            <PixPagamento pedidoId={pixEtapa.pedidoId} onWhatsapp={() => { window.location.href = pixEtapa.url; }} />
           </div>
         </div>
       )}

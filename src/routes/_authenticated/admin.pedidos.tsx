@@ -21,6 +21,7 @@ import { listPedidos, updatePedidoStatus, deletePedido, type PedidoRow } from "@
 import { listAtendentes } from "@/lib/atendentes.functions";
 import { listAdminUsers } from "@/lib/admin-users.functions";
 import { brl } from "@/lib/format";
+import { confirmarPagamentoPix } from "@/lib/pix.functions";
 import { BRAND } from "@/lib/config";
 import { useAuth } from "@/lib/auth";
 import { ExportMenu } from "@/components/export-menu";
@@ -605,6 +606,7 @@ function PedidoDetalhesModal({ pedido, onClose }: { pedido: PedidoRow; onClose: 
         </div>
 
         <div className="space-y-5 p-5">
+          <PagamentoPixAdmin pedido={pedido as any} />
           {/* Dados gerais */}
           <section className="grid grid-cols-2 gap-2 sm:grid-cols-3">
             <Row label="Cliente" value={pedido.cliente_nome} />
@@ -727,5 +729,55 @@ function PedidoDetalhesModal({ pedido, onClose }: { pedido: PedidoRow; onClose: 
         </div>
       </div>
     </div>
+  );
+}
+
+const PAG_LABEL: Record<string, string> = {
+  aguardando: "Aguardando pagamento",
+  em_analise: "Cliente avisou que pagou — conferir no banco",
+  aprovado: "Pagamento aprovado",
+  recusado: "Pagamento recusado",
+};
+
+function PagamentoPixAdmin({ pedido }: { pedido: PedidoRow & { pagamento_status?: string; pix_txid?: string | null; pix_expira_em?: string | null; pago_em?: string | null } }) {
+  const confirmar = useServerFn(confirmarPagamentoPix);
+  const qc = useQueryClient();
+  const [st, setSt] = useState(pedido.pagamento_status || "aguardando");
+  const [busy, setBusy] = useState(false);
+  if (!pedido.pix_txid) return null;
+  const expirado = st === "aguardando" && pedido.pix_expira_em && new Date(pedido.pix_expira_em).getTime() < Date.now();
+  const agir = async (aprovado: boolean) => {
+    const msg = aprovado
+      ? `Confirme que ${brl(Number(pedido.total))} caiu na conta com o código ${pedido.pix_txid}. Aprovar?`
+      : "Marcar este pagamento como não identificado?";
+    if (!window.confirm(msg)) return;
+    setBusy(true);
+    try {
+      await confirmar({ data: { id: pedido.id, aprovado } });
+      setSt(aprovado ? "aprovado" : "recusado");
+      qc.invalidateQueries();
+      toast.success(aprovado ? "Pagamento aprovado e pedido confirmado." : "Pagamento recusado.");
+    } catch (e: any) {
+      toast.error(e?.message || "Não foi possível atualizar o pagamento.");
+    } finally {
+      setBusy(false);
+    }
+  };
+  return (
+    <section className="rounded-xl border border-border bg-muted/40 p-4">
+      <div className="flex flex-wrap items-center justify-between gap-2">
+        <div>
+          <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Pagamento Pix</p>
+          <p className="text-sm font-semibold">{expirado ? "Prazo do Pix expirado" : PAG_LABEL[st] || st}</p>
+          <p className="font-mono text-[11px] text-muted-foreground">Código da transação: {pedido.pix_txid}</p>
+        </div>
+        {st !== "aprovado" && pedido.status !== "cancelado" && (
+          <div className="flex gap-2">
+            <button disabled={busy} onClick={() => agir(false)} className="rounded-full border border-border px-3 py-1.5 text-xs font-semibold disabled:opacity-50">Recusar</button>
+            <button disabled={busy} onClick={() => agir(true)} className="rounded-full bg-success px-3 py-1.5 text-xs font-bold text-background disabled:opacity-50">Aprovar pagamento</button>
+          </div>
+        )}
+      </div>
+    </section>
   );
 }

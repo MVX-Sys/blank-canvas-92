@@ -4,6 +4,7 @@ import { QrCode, Plus, Trash2, Star, Loader2 } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { logAudit } from "@/lib/audit";
+import { validarChavePix } from "@/lib/pix";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -27,13 +28,7 @@ const TIPOS: Record<Tipo, string> = {
 };
 
 function validar(tipo: Tipo, v: string): string | null {
-  const d = v.replace(/\D/g, "");
-  if (tipo === "cpf" && d.length !== 11) return "CPF deve ter 11 números";
-  if (tipo === "cnpj" && d.length !== 14) return "CNPJ deve ter 14 números";
-  if (tipo === "telefone" && (d.length < 10 || d.length > 13)) return "Telefone inválido";
-  if (tipo === "email" && !/^\S+@\S+\.\S+$/.test(v)) return "E-mail inválido";
-  if (tipo === "aleatoria" && !/^[0-9a-f-]{32,36}$/i.test(v.trim())) return "Chave aleatória inválida";
-  return null;
+  return validarChavePix(tipo, v);
 }
 
 function normalizar(tipo: Tipo, v: string) {

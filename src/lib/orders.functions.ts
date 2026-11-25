@@ -1,6 +1,7 @@
 import { createServerFn } from "@tanstack/react-start";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 import { z } from "zod";
+import { PIX_VALIDADE_MIN, txidDoPedido } from "@/lib/pix";
 import { parsePersonalizacoes } from "@/lib/personalizacao";
 
 function precoPromocionalValido(
@@ -184,6 +185,7 @@ export const createOrder = createServerFn({ method: "POST" })
     }
 
     // 4. Criar o pedido
+    const novoId = crypto.randomUUID();
     const { data: order, error: orderErr } = await supabase
       .from("pedidos")
       .insert({
@@ -199,7 +201,14 @@ export const createOrder = createServerFn({ method: "POST" })
         cliente_whatsapp: data.cliente_whatsapp as any,
         cupom_codigo: cupomCodigo as any,
         desconto_cupom: descontoCupom as any,
-      })
+        ...(data.forma_pagamento.toUpperCase() === "PIX"
+          ? {
+              id: novoId,
+              pix_txid: txidDoPedido(novoId),
+              pix_expira_em: new Date(Date.now() + PIX_VALIDADE_MIN * 60_000).toISOString(),
+            }
+          : {}),
+      } as any)
       .select()
       .single();
 
