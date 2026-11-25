@@ -1,4 +1,4 @@
-import { X, Minus, Plus, MessageCircle, Trash2, ShoppingBag, AlertCircle } from "lucide-react";
+import { X, Minus, Plus, Trash2, ShoppingBag, AlertCircle } from "lucide-react";
 import { useNavigate } from "@tanstack/react-router";
 import { useCart, itemPrecoEfetivo, ehAtacado, formatPersonalizacoes, maxQtd } from "@/lib/cart";
 import { brl } from "@/lib/format";
@@ -65,7 +65,7 @@ export function CartDrawer({ continueSearch }: { continueSearch?: { cat?: string
                 Carrinho vazio
               </p>
               <p className="mt-1 max-w-[240px] text-sm text-muted-foreground">
-                Adicione peças ao carrinho para finalizar o pedido pelo WhatsApp.
+                Adicione peças ao carrinho para finalizar seu pedido.
               </p>
 <button
                 onClick={continuarComprando}
@@ -100,12 +100,11 @@ export function CartDrawer({ continueSearch }: { continueSearch?: { cat?: string
               onClick={finalizar}
               className="btn-shine flex w-full items-center justify-center gap-2 rounded-full bg-primary px-4 py-3.5 text-sm font-bold uppercase tracking-wider text-primary-foreground shadow-sm transition-all hover:opacity-95 active:scale-[0.98]"
             >
-              <MessageCircle className="h-4 w-4" />
-              Finalizar pelo WhatsApp
+              Finalizar pedido
             </button>
 
             <p className="mt-2 text-center text-[11px] leading-relaxed text-muted-foreground">
-              O pedido será finalizado e discutido pelo WhatsApp com um atendente.
+              Ao confirmar, você escolhe o atendente e a forma de pagamento.
             </p>
             <div className="mt-3 flex items-center justify-between text-xs text-muted-foreground">
 <button

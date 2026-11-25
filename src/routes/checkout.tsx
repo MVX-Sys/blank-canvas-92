@@ -29,7 +29,7 @@ export const Route = createFileRoute("/checkout")({
       { title: `Finalizar pedido — ${BRAND}` },
       {
         name: "description",
-        content: `Preencha seus dados para finalizar o pedido pelo WhatsApp na ${BRAND}.`,
+        content: `Preencha seus dados e compre na ${BRAND}.`,
       },
     ],
   }),
@@ -321,7 +321,7 @@ function CheckoutPage() {
               Finalizar pedido
             </h1>
             <p className="mt-1 text-xs text-muted-foreground lg:text-sm">
-              Preencha os dados e finalize pelo WhatsApp.
+              Preencha os dados e confirme sua compra.
             </p>
           </div>
           <span className="hidden shrink-0 rounded-md bg-primary/10 px-2.5 py-1 text-[10px] font-bold uppercase tracking-widest text-primary lg:block">
@@ -334,7 +334,7 @@ function CheckoutPage() {
             <MessageCircle className="mt-0.5 h-4 w-4 shrink-0 text-primary" />
             <p className="text-[11px] leading-relaxed text-muted-foreground">
               <span className="font-semibold text-foreground">Este pedido ainda não é uma compra confirmada.</span>{" "}
-              Ao finalizar, você fala com um atendente no WhatsApp — valores, frete e pagamento são confirmados por lá antes de qualquer cobrança.
+              Ao comprar, você escolhe um atendente — valores, frete e pagamento são confirmados antes de qualquer cobrança.
             </p>
           </div>
 
@@ -538,8 +538,8 @@ function CheckoutPage() {
                 disabled={items.length === 0}
                 className="btn-shine inline-flex w-full items-center justify-center gap-2 rounded-xl bg-primary py-4 text-sm font-bold text-primary-foreground shadow-lg shadow-primary/20 transition-all hover:opacity-95 active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-40"
               >
-                <MessageCircle className="h-5 w-5" />
-                Finalizar no WhatsApp
+                <ShoppingBag className="h-5 w-5" />
+                Comprar
               </button>
               <button
                 type="button"
@@ -572,8 +572,8 @@ function CheckoutPage() {
               disabled={items.length === 0}
               className="btn-shine inline-flex flex-1 items-center justify-center gap-2 rounded-xl bg-primary py-3.5 text-sm font-bold text-primary-foreground shadow-lg shadow-primary/20 transition-all active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-40"
             >
-              <MessageCircle className="h-4 w-4" />
-              Finalizar no WhatsApp
+              <ShoppingBag className="h-4 w-4" />
+              Comprar
             </button>
             <button
               type="button"
@@ -621,7 +621,7 @@ function CheckoutPage() {
               <X className="h-4 w-4" />
             </button>
             <h2 className="font-display text-xl font-semibold tracking-tight">Escolha um atendente</h2>
-            <p className="mt-1 text-sm text-muted-foreground">Toque no atendente para finalizar no WhatsApp.</p>
+            <p className="mt-1 text-sm text-muted-foreground">Toque no atendente para continuar.</p>
 
             <div className="mt-6 grid grid-cols-2 gap-4 sm:grid-cols-3">
               {atendentes.map((a) => (
